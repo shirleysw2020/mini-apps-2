@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import ReactPaginate from 'react-paginate';
 import db from '../data/db.json';
 import axios from 'axios';
+import SearchResult from './SearchResult.jsx';
 
 const url = 'http://localhost:3000/events';
 
@@ -9,6 +10,7 @@ const App = () => {
 
    const [value, setValue] = useState('');
    const [userInput, setUserInput] = useState('');
+   const [searchRes, setSearchRes] = useState([]);
 
    const handleSubmit = () => {
       event.preventDefault();
@@ -18,6 +20,7 @@ const App = () => {
       axios.get(`${url}?q=${userInput}&_page=1&_limit=10`)
       .then((res) => {
          console.log(res.data, 'client got res');
+         setSearchRes(res.data);
       })
       .catch((err) => console.log(err,'failed to fetch data'));
    }
@@ -35,6 +38,20 @@ const App = () => {
                <input type="submit" value="Search" />
             </label>
          </form>
+         <SearchResult res={searchRes}/>
+         <ReactPaginate
+          previousLabel={'previous'}
+          nextLabel={'next'}
+          breakLabel={'...'}
+          breakClassName={'break-me'}
+         //  pageCount={this.state.pageCount}
+          marginPagesDisplayed={2}
+          pageRangeDisplayed={5}
+         //  onPageChange={this.handlePageClick}
+          containerClassName={'pagination'}
+          subContainerClassName={'pages pagination'}
+          activeClassName={'active'}
+        />
       </div>
    );
 }
