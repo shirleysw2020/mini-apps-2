@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/junlinsw2020/hrsf129-mini-apps-2#readme",
   "dependencies": {
+    "axios": "^0.20.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-paginate": "^6.5.0",
