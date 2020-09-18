@@ -3,32 +3,40 @@ import ReactDOM from 'react-dom';
 import axios from 'axios';
 import styled from 'styled-components';
 import { Line } from 'react-chartjs-2';
+const baseAPI = 'https://api.coindesk.com/v1/bpi';
 
 const App = () => {
    const [BPIChart, setBPIChart] = useState({});
+   const [BPIData, setBPIData] = useState({});
 
    const chart = () => {
+      console.log(BPIData);
       setBPIChart({
-         labels: ['9/7', '9/8', '9/9', '9/10', '9/11', '9/12'],
+         labels: ['9/2', '9/3', '9/4', '9/5', '9/6'],
          datasets: [{
-            label: 'BPI from 2020/09/07 - 2020/09/13',
+            label: 'BPI from 2020/09/02 - 2020/09/06',
             backgroundColor: 'rgb(255, 99, 132)',
-            data: [0, 15, 5, 10, 25, 13],
+            data: BPIData,
             borderWidth: 4
          }]
       });
    }
 
    useEffect(() => {
-      chart();
-      const url = 'https://api.coindesk.com/v1/bpi/historical/close.json?start=2020-09-07&end=2020-09-13';
+      const url = `${baseAPI}/historical/close.json?start=2020-09-01&end=2020-09-06`;
       axios.get(url)
       .then((res) => {
-         console.log(res.data);
-         setHistoricalBPI(res.data.bpi);
+         setBPIData(Object.values(res.data.bpi));
       })
       .catch((err) => {console.log('failed fetching API')})
-   },[]);
+   }, []);
+
+   // need second useEffect to watch change on BPIDate and invoke chart()
+   useEffect(() => {
+      if (BPIData.length > 0) {
+         chart();
+      }
+   }, [BPIData]);
 
    return (
       <GeneralDiv>
@@ -49,7 +57,7 @@ const GeneralDiv = styled.div`
    text-align: center;
    font-family: arial;
    height: 500px;
-   width: 600px;
+   width: 750px;
 `;
 
 ReactDOM.render(<App/>, document.getElementById('app'));
